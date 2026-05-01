@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>April Photobooth</title>
+  <link rel="icon" href="img/icon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- ЭКРАН 1: Стартовый -->
+    <section id="screen-start" class="screen active">
+      <div class="start-content">
+        <img src="img/PHOTOBOOTH.png" alt="Фотобудка" class="start-image">
+        <button id="btn-start" class="btn-outline">Начать</button>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 2: Выбор рамки и цвета -->
+    <section id="screen-settings" class="screen bg-white">
+      <div class="frame-switcher">
+        <button class="arrow-btn" id="arrow-left">
+          <img src="img/Arrow_left.svg" alt="Назад">
+        </button>
+        <div class="frame-container">
+          <img src="Sample/Frame_strip.png" alt="Рамка" id="frame-image" class="frame-image">
+        </div>
+        <button class="arrow-btn" id="arrow-right">
+          <img src="img/Arrow_right.svg" alt="Вперед">
+        </button>
+      </div>
+
+      <div class="bottom-section">
+        <div class="color-section">
+          <span class="label">ЦВЕТ РАМКИ</span>
+          <div class="color-scroll">
+            <button class="color-opt active" data-color="White"><img src="Variants/White.png" alt="Белый"></button>
+            <button class="color-opt" data-color="Black"><img src="Variants/Black.png" alt="Чёрный"></button>
+            <button class="color-opt" data-color="Red"><img src="Variants/Red.png" alt="Красный"></button>
+            <button class="color-opt" data-color="Cell"><img src="Variants/Cell.png" alt="Клетка"></button>
+            <button class="color-opt" data-color="Point"><img src="Variants/Point.png" alt="Горошек"></button>
+          </div>
+        </div>
+        <button id="btn-next" class="btn-primary-black">Дальше</button>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 3: Камера -->
+    <section id="screen-camera" class="screen bg-white">
+      <div class="camera-container">
+        <video id="video" autoplay playsinline muted></video>
+        <div id="camera-overlay" class="camera-overlay">
+          <span id="overlay-text" class="overlay-text"></span>
+        </div>
+      </div>
+
+      <div class="toggle-wrapper">
+        <div class="toggle-track" id="toggle-track">
+          <div class="toggle-slider"></div>
+          <button id="btn-color" class="toggle-btn active">Цветное</button>
+          <button id="btn-bw" class="toggle-btn inactive">Ч/Б</button>
+        </div>
+      </div>
+
+      <div class="camera-bottom-section">
+        <button id="btn-capture" class="btn-capture-circle"></button>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 4: Результат (Принтер) -->
+    <section id="screen-result" class="screen bg-white">
+      <div class="printer-area">
+        <!-- 1. Фон принтера (нижний слой) -->
+        <img src="Animation/loading_1.png" class="printer-bg" alt="Printer">
+        
+        <!-- 2. Фотополоска (средний слой) -->
+        <div class="photo-strip-wrapper" id="photo-strip-wrapper">
+          <img id="result-image" src="" alt="Готовое фото">
+        </div>
+        
+        <!-- 3. Тень (верхний слой, скрывает верх фото) -->
+        <img src="Animation/loading_2.png" class="printer-shadow" alt="Shadow">
+      </div>
+
+      <div class="result-actions">
+        <button id="btn-download" class="btn-primary-black">Скачать</button>
+        <button id="btn-new" class="btn-text">Новое фото</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
