@@ -15,10 +15,10 @@ body {
   width: 100%;
   max-width: 420px;
   height: 100vh;
+  max-height: 950px; /* Ограничение максимальной высоты */
   margin: 0 auto;
   position: relative;
   background: #ffffff;
-  border-color: #ffffff;
   overflow: hidden;
 }
 
@@ -26,11 +26,36 @@ body {
 @media (min-width: 768px) {
   body { background: #FFFFFF; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
   .app-container {
-    height: 850px;
-    max-height: 90vh;
+    height: 90vh;
+    max-height: 850px;
     border-radius: 30px;
     background: #FFFFFF;
-    box-shadow: none; /* Тень убрана */
+    box-shadow: none;
+  }
+}
+
+/* Адаптация для iPhone 11 (414×896) и подобных */
+@media (max-height: 850px) {
+  .app-container {
+    max-height: 100vh;
+  }
+  
+  #screen-settings {
+    padding: 40px 20px; /* Уменьшаем верхний отступ */
+    gap: 16px; /* Уменьшаем gap */
+  }
+  
+  .frame-container {
+    height: 350px; /* Уменьшаем высоту контейнера рамки */
+  }
+  
+  .start-image {
+    width: 280px; /* Уменьшаем стартовое изображение */
+  }
+  
+  .btn-outline {
+    width: 260px;
+    height: 46px;
   }
 }
 
@@ -56,26 +81,65 @@ body {
   width: 290px; 
   height: 48px;  
   background: #E3E3E3;
-   font-size: 16px; 
-   border-radius: 50px; 
-   cursor: pointer; 
-   font-family: 'Roboto', sans-serif;
+  color: #302C2C; /* Добавлен цвет текста */
+  border: none; /* Убрана обводка */
+  font-size: 16px; 
+  border-radius: 50px; 
+  cursor: pointer; 
+  font-family: 'Roboto', sans-serif;
 }
 
 /* ============================================
    ЭКРАН 2
    ============================================ */
-#screen-settings { background: #FFFFFF; justify-content: center; gap: 24px; padding: 72px 20px; }
-.frame-switcher { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+#screen-settings { 
+  background: #FFFFFF; 
+  justify-content: flex-start; /* Изменено для лучшей адаптации */
+  gap: 24px; 
+  padding: 60px 20px 20px; /* Сбалансированные отступы */
+  overflow-y: auto; /* Разрешаем скролл если нужно */
+}
+
+.frame-switcher { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  width: 100%;
+  flex-shrink: 0; /* Не сжимать */
+}
+
 .arrow-btn { background: none; border: none; cursor: pointer; padding: 10px; opacity: 0.5; transition: opacity 0.2s; }
 .arrow-btn:hover { opacity: 1; }
 .arrow-btn img { width: 24px; height: 24px; display: block; }
 
-.frame-container { flex: 1; display: flex; justify-content: center; align-items: center; height: 440px; }
-.frame-image { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: opacity 0.3s ease, transform 0.3s ease; }
-.frame-image.switching { opacity: 0.3; transform: scale(0.95); }
+.frame-container { 
+  flex: 1; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  height: 400px; /* Чуть меньше для адаптации */
+  min-height: 300px;
+}
 
-.bottom-section { width: 100%; display: flex; flex-direction: column; gap: 16px; margin-top: auto; padding-bottom: 8px; }
+.frame-image { 
+  max-width: 100%; 
+  max-height: 100%; 
+  width: auto; 
+  height: auto; 
+  object-fit: contain; 
+  transition: opacity 0.3s ease; /* Убрал transform чтобы не скакало */
+}
+
+.bottom-section { 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 16px; 
+  margin-top: auto; 
+  padding-bottom: 8px;
+  flex-shrink: 0; /* Не сжимать */
+}
+
 .color-section { width: 100%; padding: 0; }
 .label { display: block; color: #818286; font-size: 12px; letter-spacing: 0.5px; margin-bottom: 16px; text-align: left; }
 
@@ -86,15 +150,46 @@ body {
 .color-opt.active { transform: scale(1.12); border-color: #BABBBC; border-radius: 22px; }
 
 .btn-primary-black {
-  width: 100%; max-width: 420px; height: 52px; background: #111010; color: #FFFFFF; border: none;
-  border-radius: 50px; font-size: 16px; cursor: pointer; font-family: 'Roboto', sans-serif; align-self: center; margin: 26px auto 0;
+  width: 100%; 
+  max-width: 420px; 
+  height: 52px; 
+  background: #111010; 
+  color: #FFFFFF; 
+  border: none;
+  border-radius: 50px; 
+  font-size: 16px; 
+  cursor: pointer; 
+  font-family: 'Roboto', sans-serif; 
+  align-self: center; 
+  margin: 26px auto 0;
+  flex-shrink: 0; /* Не сжимать */
 }
 
 /* ============================================
    ЭКРАН 3: КАМЕРА
    ============================================ */
-#screen-camera { background: #FFFFFF; display: flex; flex-direction: column; align-items: center; padding: 32px 20px 40px; gap: 0; }
-.camera-container { width: 100%; aspect-ratio: 3/4; background: #EBECED; border-radius: 20px; overflow: hidden; position: relative; margin-bottom: 16px; }
+#screen-camera { 
+  background: #FFFFFF; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 32px 20px 40px; 
+  gap: 0;
+  overflow-y: auto; /* Разрешаем скролл если нужно */
+}
+
+.camera-container { 
+  width: 100%; 
+  aspect-ratio: 3/4; 
+  background: #EBECED; 
+  border-radius: 20px; 
+  overflow: hidden; 
+  position: relative; 
+  margin-bottom: 16px;
+  flex-shrink: 0;
+  max-height: 55vh; /* Ограничение высоты */
+}
+
 #video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 
 .camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; justify-content: center; align-items: center; z-index: 10; opacity: 0; transition: opacity 0.2s ease; }
@@ -132,35 +227,35 @@ body {
   align-items: center;
   padding: 20px 20px 30px;
   gap: 0;
+  overflow-y: auto; /* Разрешаем скролл */
 }
 
 .printer-area {
   position: relative;
   width: 100%;
-  height: 45vh;
+  height: 40vh; /* Уменьшил с 45vh */
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-bottom: auto;
-  margin-top: 25px;
+  margin-top: 15px; /* Уменьшил отступ */
+  flex-shrink: 0;
 }
 
-/* 1. Фон принтера (loading_1) — нижний слой */
 .printer-bg {
   position: absolute;
   top: 0;
   width: 280px;
-  z-index: 1; /* ⬇️ Опущен вниз, теперь фото лежит поверх него */
+  z-index: 1;
 }
 
-/* 2. Фотополоска — средний слой */
 .photo-strip-wrapper {
   position: absolute;
   top: 30px;
   left: 50%;
- transform: translateX(-50%) translateY(6px);
+  transform: translateX(-50%) translateY(6px);
   width: 115px;
-  z-index: 2; /* ⬆️ Поднят над принтером */
+  z-index: 2;
   transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -174,7 +269,6 @@ body {
   display: block;
 }
 
-/* 3. Тень (loading_2) — верхний слой */
 .printer-shadow {
   position: absolute;
   top: 30px;
@@ -182,19 +276,20 @@ body {
   transform: translateX(-50%);
   width: 230px;
   height: 68px;
-  z-index: 3; /* ⬆️ Лежит поверх фото, создаёт эффект стыка */
+  z-index: 3;
   opacity: 1;
   pointer-events: none;
 }
 
 .result-actions {
   width: 100%;
-  margin-top: 20px;
+  margin-top: auto; /* Прижимаем к низу */
   padding-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .btn-text {

@@ -57,12 +57,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (arrowRight) arrowRight.addEventListener('click', () => switchFrame('next'));
   if (arrowLeft) arrowLeft.addEventListener('click', () => switchFrame('prev'));
 
-  // 5. ВЫБОР ЦВЕТА
+  // 5. ВЫБОР ЦВЕТА + СМЕНА РАМКИ
+  function updateFrameByColor() {
+    // Определяем имя файла рамки
+    let frameSrc;
+    if (currentColor === 'White') {
+      // Для белой используем Frame_strip (с обводкой)
+      frameSrc = `Sample/Frame_${currentFrameType}.png`;
+    } else {
+      // Для цветных используем Frame_strip_Color.png
+      frameSrc = `frames/Frame_${currentFrameType}_${currentColor}.png`;
+    }
+    
+    // Плавная смена без скачков
+    frameImage.style.opacity = '0';
+    setTimeout(() => {
+      frameImage.src = frameSrc;
+      frameImage.onload = () => {
+        frameImage.style.opacity = '1';
+      };
+    }, 150);
+  }
+
   colorOptions.forEach(btn => {
     btn.addEventListener('click', () => {
       colorOptions.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentColor = btn.dataset.color;
+      updateFrameByColor(); // Меняем рамку при клике на цвет
     });
   });
 
