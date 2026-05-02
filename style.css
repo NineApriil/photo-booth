@@ -15,7 +15,7 @@ body {
   width: 100%;
   max-width: 420px;
   height: 100vh;
-  max-height: 950px; /* Ограничение максимальной высоты */
+  max-height: 950px;
   margin: 0 auto;
   position: relative;
   background: #ffffff;
@@ -41,16 +41,16 @@ body {
   }
   
   #screen-settings {
-    padding: 40px 20px; /* Уменьшаем верхний отступ */
-    gap: 16px; /* Уменьшаем gap */
+    padding: 40px 20px;
+    gap: 16px;
   }
   
   .frame-container {
-    height: 350px; /* Уменьшаем высоту контейнера рамки */
+    height: 350px;
   }
   
   .start-image {
-    width: 280px; /* Уменьшаем стартовое изображение */
+    width: 280px;
   }
   
   .btn-outline {
@@ -81,8 +81,8 @@ body {
   width: 290px; 
   height: 48px;  
   background: #E3E3E3;
-  color: #302C2C; /* Добавлен цвет текста */
-  border: none; /* Убрана обводка */
+  color: #302C2C;
+  border: none;
   font-size: 16px; 
   border-radius: 50px; 
   cursor: pointer; 
@@ -94,10 +94,10 @@ body {
    ============================================ */
 #screen-settings { 
   background: #FFFFFF; 
-  justify-content: flex-start; /* Изменено для лучшей адаптации */
+  justify-content: flex-start;
   gap: 24px; 
-  padding: 60px 20px 20px; /* Сбалансированные отступы */
-  overflow-y: auto; /* Разрешаем скролл если нужно */
+  padding: 60px 20px 20px;
+  overflow-y: auto;
 }
 
 .frame-switcher { 
@@ -105,7 +105,7 @@ body {
   align-items: center; 
   justify-content: space-between; 
   width: 100%;
-  flex-shrink: 0; /* Не сжимать */
+  flex-shrink: 0;
 }
 
 .arrow-btn { background: none; border: none; cursor: pointer; padding: 10px; opacity: 0.5; transition: opacity 0.2s; }
@@ -117,7 +117,7 @@ body {
   display: flex; 
   justify-content: center; 
   align-items: center; 
-  height: 400px; /* Чуть меньше для адаптации */
+  height: 400px;
   min-height: 300px;
 }
 
@@ -127,7 +127,7 @@ body {
   width: auto; 
   height: auto; 
   object-fit: contain; 
-  transition: opacity 0.3s ease; /* Убрал transform чтобы не скакало */
+  transition: opacity 0.3s ease;
 }
 
 .bottom-section { 
@@ -137,7 +137,7 @@ body {
   gap: 16px; 
   margin-top: auto; 
   padding-bottom: 8px;
-  flex-shrink: 0; /* Не сжимать */
+  flex-shrink: 0;
 }
 
 .color-section { width: 100%; padding: 0; }
@@ -162,7 +162,7 @@ body {
   font-family: 'Roboto', sans-serif; 
   align-self: center; 
   margin: 26px auto 0;
-  flex-shrink: 0; /* Не сжимать */
+  flex-shrink: 0;
 }
 
 /* ============================================
@@ -175,7 +175,7 @@ body {
   align-items: center; 
   padding: 32px 20px 40px; 
   gap: 0;
-  overflow-y: auto; /* Разрешаем скролл если нужно */
+  overflow-y: auto;
 }
 
 .camera-container { 
@@ -187,7 +187,7 @@ body {
   position: relative; 
   margin-bottom: 16px;
   flex-shrink: 0;
-  max-height: 55vh; /* Ограничение высоты */
+  max-height: 55vh;
 }
 
 #video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
@@ -218,82 +218,104 @@ body {
 .btn-capture-circle:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ============================================
-   ЭКРАН 4: РЕЗУЛЬТАТ (ПРИНТЕР)
+   ЭКРАН 4: РЕЗУЛЬТАТ
    ============================================ */
 #screen-result {
   background: #FFFFFF;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 20px 30px;
+  justify-content: flex-start;
+  padding: 40px 20px 30px;
   gap: 0;
-  overflow-y: auto; /* Разрешаем скролл */
+  overflow: hidden;
 }
 
-.printer-area {
+.result-area {
   position: relative;
   width: 100%;
-  height: 40vh; /* Уменьшил с 45vh */
+  max-width: 320px;
+  height: 45vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-bottom: auto;
-  margin-top: 15px; /* Уменьшил отступ */
-  flex-shrink: 0;
 }
 
-.printer-bg {
+/* Обёртка фотографии (полоска strip) */
+.photo-wrapper {
   position: absolute;
   top: 0;
-  width: 280px;
-  z-index: 1;
-}
-
-.photo-strip-wrapper {
-  position: absolute;
-  top: 30px;
   left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  width: 115px;
+  transform: translateX(-50%) translateY(-100%);
+  width: 116px; /* Уменьшено в ~0.5 раза (было 135px) */
   z-index: 2;
-  transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0;
 }
 
-.photo-strip-wrapper.animate {
-  transform: translateX(-50%) translateY(40px);
+/* Для квадратной рамки quadrate */
+.photo-wrapper.quadrate {
+  width: 286px; /* Увеличено в ~1.3 раза (было 155px) */
+}
+
+/* Анимация: фото плавно выезжает сверху */
+.photo-wrapper.animate {
+  opacity: 1;
+  animation: slideDown 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 1;
+  }
 }
 
 #result-image {
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
-.printer-shadow {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 230px;
-  height: 68px;
-  z-index: 3;
-  opacity: 1;
-  pointer-events: none;
-}
-
+/* Кнопки */
 .result-actions {
   width: 100%;
-  margin-top: auto; /* Прижимаем к низу */
-  padding-bottom: 10px;
+  max-width: 320px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  flex-shrink: 0;
+}
+
+.btn-primary-black {
+  width: 100%;
+  height: 52px;
+  background: #111010;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
 }
 
 .btn-text {
-  background: none; border: none; color: #A0A0A0; font-size: 14px;
-  cursor: pointer; font-family: 'Roboto', sans-serif; padding: 8px;
+  background: none;
+  border: none;
+  color: #A0A0A0;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  padding: 8px;
 }
 .btn-text:hover { color: #111010; }

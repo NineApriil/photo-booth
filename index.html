@@ -15,7 +15,7 @@
     <section id="screen-start" class="screen active">
       <div class="start-content">
         <img src="img/PHOTOBOOTH.png" alt="Фотобудка" class="start-image">
-        <button id="btn-start" class="btn-outline">Начать</button>
+        <button id="btn-start" class="btn-outline">Зайти</button>
       </div>
     </section>
 
@@ -70,19 +70,13 @@
       </div>
     </section>
 
-    <!-- ЭКРАН 4: Результат (Принтер) -->
+        <!-- ЭКРАН 4: Результат -->
     <section id="screen-result" class="screen bg-white">
-      <div class="printer-area">
-        <!-- 1. Фон принтера (нижний слой) -->
-        <img src="Animation/loading_1.png" class="printer-bg" alt="Printer">
-        
-        <!-- 2. Фотополоска (средний слой) -->
-        <div class="photo-strip-wrapper" id="photo-strip-wrapper">
+      <div class="result-area">
+        <!-- Фотополоска (анимируется сверху вниз) -->
+        <div class="photo-wrapper" id="photo-wrapper">
           <img id="result-image" src="" alt="Готовое фото">
         </div>
-        
-        <!-- 3. Тень (верхний слой, скрывает верх фото) -->
-        <img src="Animation/loading_2.png" class="printer-shadow" alt="Shadow">
       </div>
 
       <div class="result-actions">

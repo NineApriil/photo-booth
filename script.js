@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('🟢 Приложение инициализировано');
 
   // 1. СОСТОЯНИЕ
-  let currentFrameType = 'strip';
+  let currentFrameType = 'strip'; // 'strip' или 'quadrate'
   let currentColor = 'White';
   let mediaStream = null;
   let capturedPhotos = []; 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Элементы экрана 4
   const resultImage = document.getElementById('result-image');
-  const photoStripWrapper = document.getElementById('photo-strip-wrapper');
+  const photoWrapper = document.getElementById('photo-wrapper');
   const btnDownload = document.getElementById('btn-download');
   const btnNew = document.getElementById('btn-new');
 
@@ -48,43 +48,44 @@ document.addEventListener('DOMContentLoaded', () => {
     currentFrameType = direction === 'next'
       ? (currentFrameType === 'strip' ? 'quadrate' : 'strip')
       : (currentFrameType === 'quadrate' ? 'strip' : 'quadrate');
-    frameImage.classList.add('switching');
-    setTimeout(() => {
-      frameImage.src = `Sample/Frame_${currentFrameType}.png`;
-      frameImage.classList.remove('switching');
-    }, 150);
+    
+    updateFrameByColor();
   }
-  if (arrowRight) arrowRight.addEventListener('click', () => switchFrame('next'));
-  if (arrowLeft) arrowLeft.addEventListener('click', () => switchFrame('prev'));
-
-  // 5. ВЫБОР ЦВЕТА + СМЕНА РАМКИ
+  
   function updateFrameByColor() {
-    // Определяем имя файла рамки
     let frameSrc;
+    
     if (currentColor === 'White') {
-      // Для белой используем Frame_strip (с обводкой)
       frameSrc = `Sample/Frame_${currentFrameType}.png`;
+    } else if (currentColor === 'Point') {
+      frameSrc = `frames/Frame_${currentFrameType}_point.png`;
     } else {
-      // Для цветных используем Frame_strip_Color.png
       frameSrc = `frames/Frame_${currentFrameType}_${currentColor}.png`;
     }
     
-    // Плавная смена без скачков
     frameImage.style.opacity = '0';
     setTimeout(() => {
       frameImage.src = frameSrc;
       frameImage.onload = () => {
         frameImage.style.opacity = '1';
       };
+      frameImage.classList.remove('switching');
     }, 150);
+    
+    frameImage.classList.add('switching');
+    console.log(`🖼️ Загружена рамка: ${frameSrc}, тип: ${currentFrameType}`);
   }
 
+  if (arrowRight) arrowRight.addEventListener('click', () => switchFrame('next'));
+  if (arrowLeft) arrowLeft.addEventListener('click', () => switchFrame('prev'));
+
+  // 5. ВЫБОР ЦВЕТА
   colorOptions.forEach(btn => {
     btn.addEventListener('click', () => {
       colorOptions.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentColor = btn.dataset.color;
-      updateFrameByColor(); // Меняем рамку при клике на цвет
+      updateFrameByColor();
     });
   });
 
@@ -125,19 +126,28 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnColor) btnColor.addEventListener('click', () => applyFilter('color'));
   if (btnBw) btnBw.addEventListener('click', () => applyFilter('bw'));
 
-  // 8. СЪЁМКА И ГЕНЕРАЦИЯ ПОЛОСКИ
+  // 8. СЪЁМКА
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-  // Размеры из макета
-  const PHOTO_W = 252;
-  const PHOTO_H = 336;
-  const GAP = 32;
-  const MARGIN_SIDE = 48;
-  const MARGIN_TOP = 48;
-  const MARGIN_BOTTOM = 184;
-  
-  const STRIP_WIDTH = MARGIN_SIDE + PHOTO_W + MARGIN_SIDE; 
-  const STRIP_HEIGHT = (PHOTO_H * 4) + (GAP * 3) + MARGIN_TOP + MARGIN_BOTTOM;
+  // 🔥 Размеры для ВЕРТИКАЛЬНОЙ рамки (strip) — УВЕЛИЧЕНО В 2 РАЗА
+  const STRIP_PHOTO_W = 504;   // было 252 × 2
+  const STRIP_PHOTO_H = 672;   // было 336 × 2
+  const STRIP_GAP = 64;        // было 32 × 2
+  const STRIP_MARGIN_SIDE = 96; // было 48 × 2
+  const STRIP_MARGIN_TOP = 96;  // было 48 × 2
+  const STRIP_MARGIN_BOTTOM = 368; // было 184 × 2
+  const STRIP_WIDTH = STRIP_MARGIN_SIDE + STRIP_PHOTO_W + STRIP_MARGIN_SIDE; 
+  const STRIP_HEIGHT = (STRIP_PHOTO_H * 4) + (STRIP_GAP * 3) + STRIP_MARGIN_TOP + STRIP_MARGIN_BOTTOM;
+
+  // 🔥 Размеры для КВАДРАТНОЙ рамки (quadrate) — УВЕЛИЧЕНО В 2 РАЗА
+  const QUAD_PHOTO_W = 952;    // было 476 × 2
+  const QUAD_PHOTO_H = 1264;   // было 632 × 2
+  const QUAD_GAP = 120;        // было 60 × 2
+  const QUAD_MARGIN_TOP = 176; // было 88 × 2
+  const QUAD_MARGIN_SIDE = 120; // было 60 × 2
+  const QUAD_MARGIN_BOTTOM = 536; // было 268 × 2
+  const QUAD_WIDTH = (QUAD_PHOTO_W * 2) + QUAD_GAP + (QUAD_MARGIN_SIDE * 2);
+  const QUAD_HEIGHT = (QUAD_PHOTO_H * 2) + QUAD_GAP + QUAD_MARGIN_TOP + QUAD_MARGIN_BOTTOM;
 
   function captureFrame() {
     const canvas = document.createElement('canvas');
@@ -148,12 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (vW / vH > 3/4) { sw = vH * (3/4); sx = (vW - sw) / 2; } 
     else { sh = vW / (3/4); sy = (vH - sh) / 2; }
 
-    canvas.width = PHOTO_W;
-    canvas.height = PHOTO_H;
+    // 🔥 Используем увеличенные размеры для quadrate как базовый
+    canvas.width = QUAD_PHOTO_W;
+    canvas.height = QUAD_PHOTO_H;
     ctx.save();
-    ctx.translate(PHOTO_W, 0); ctx.scale(-1, 1);
+    ctx.translate(QUAD_PHOTO_W, 0); ctx.scale(-1, 1);
     if (btnColor.classList.contains('inactive')) ctx.filter = 'grayscale(100%) contrast(1.15)';
-    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, PHOTO_W, PHOTO_H);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, QUAD_PHOTO_W, QUAD_PHOTO_H);
     ctx.restore();
     return canvas.toDataURL('image/png');
   }
@@ -161,8 +172,32 @@ document.addEventListener('DOMContentLoaded', () => {
   async function createStrip() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = STRIP_WIDTH;
-    canvas.height = STRIP_HEIGHT;
+    
+    // Выбираем размеры в зависимости от типа рамки
+    let stripWidth, stripHeight, photoW, photoH, gap, marginSide, marginTop, marginBottom;
+    
+    if (currentFrameType === 'quadrate') {
+      stripWidth = QUAD_WIDTH;
+      stripHeight = QUAD_HEIGHT;
+      photoW = QUAD_PHOTO_W;
+      photoH = QUAD_PHOTO_H;
+      gap = QUAD_GAP;
+      marginSide = QUAD_MARGIN_SIDE;
+      marginTop = QUAD_MARGIN_TOP;
+      marginBottom = QUAD_MARGIN_BOTTOM;
+    } else {
+      stripWidth = STRIP_WIDTH;
+      stripHeight = STRIP_HEIGHT;
+      photoW = STRIP_PHOTO_W;
+      photoH = STRIP_PHOTO_H;
+      gap = STRIP_GAP;
+      marginSide = STRIP_MARGIN_SIDE;
+      marginTop = STRIP_MARGIN_TOP;
+      marginBottom = STRIP_MARGIN_BOTTOM;
+    }
+    
+    canvas.width = stripWidth;
+    canvas.height = stripHeight;
 
     // 1. Фон (Цвет)
     if (currentColor === 'White') ctx.fillStyle = '#FFFFFF';
@@ -170,21 +205,21 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (currentColor === 'Red') ctx.fillStyle = '#7D0002';
     else if (currentColor === 'Point') ctx.fillStyle = '#F5F4F2';
     else if (currentColor === 'Cell') ctx.fillStyle = '#F2EFD9';
-    ctx.fillRect(0, 0, STRIP_WIDTH, STRIP_HEIGHT);
+    ctx.fillRect(0, 0, stripWidth, stripHeight);
 
-    // 2. Паттерны
+    // 2. Паттерны (масштабируем под увеличенный размер)
     if (currentColor === 'Point') {
       ctx.fillStyle = '#111010';
-      for (let x = 10; x < STRIP_WIDTH; x += 12) {
-        for (let y = 10; y < STRIP_HEIGHT; y += 12) {
-          ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2); ctx.fill();
+      for (let x = 20; x < stripWidth; x += 24) { // ×2
+        for (let y = 20; y < stripHeight; y += 24) { // ×2
+          ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill(); // радиус ×2
         }
       }
     }
     if (currentColor === 'Cell') {
-      const sz = 12;
-      for (let x = 0; x < STRIP_WIDTH; x += sz) {
-        for (let y = 0; y < STRIP_HEIGHT; y += sz) {
+      const sz = 24; // ×2
+      for (let x = 0; x < stripWidth; x += sz) {
+        for (let y = 0; y < stripHeight; y += sz) {
           if ((Math.floor(x/sz) + Math.floor(y/sz)) % 2 === 0) {
             ctx.fillStyle = '#7D0002'; ctx.fillRect(x, y, sz, sz);
           }
@@ -192,25 +227,64 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 3. Накладываем PNG рамки поверх
-    const framePath = `frames/Frame_strip_${currentColor}.png`;
+    // 3. Вставляем 4 фотографии
+    if (currentFrameType === 'quadrate') {
+      // КВАДРАТНАЯ РАССТАНОВКА: 2x2 сетка
+      for (let i = 0; i < 4; i++) {
+        const img = new Image();
+        img.src = capturedPhotos[i];
+        await new Promise(res => { img.onload = res; });
+        
+        let xPos, yPos;
+        
+        if (i === 0) {
+          xPos = marginSide;
+          yPos = marginTop;
+        } else if (i === 1) {
+          xPos = marginSide + photoW + gap;
+          yPos = marginTop;
+        } else if (i === 2) {
+          xPos = marginSide;
+          yPos = marginTop + photoH + gap;
+        } else {
+          xPos = marginSide + photoW + gap;
+          yPos = marginTop + photoH + gap;
+        }
+        
+        ctx.drawImage(img, xPos, yPos, photoW, photoH);
+      }
+    } else {
+      // ВЕРТИКАЛЬНАЯ РАССТАНОВКА: одна колонка
+      for (let i = 0; i < 4; i++) {
+        const img = new Image();
+        img.src = capturedPhotos[i];
+        await new Promise(res => { img.onload = res; });
+        
+        const yPos = marginTop + i * (photoH + gap);
+        ctx.drawImage(img, marginSide, yPos, photoW, photoH);
+      }
+    }
+
+    // 4. Накладываем PNG рамки ПОВЕРХ фотографий
+    let framePath;
+    if (currentColor === 'White') {
+      framePath = `Sample/Frame_${currentFrameType}.png`;
+    } else if (currentColor === 'Point') {
+      framePath = `frames/Frame_${currentFrameType}_point.png`;
+    } else {
+      framePath = `frames/Frame_${currentFrameType}_${currentColor}.png`;
+    }
+    
     const frameImg = new Image();
     
     await new Promise(resolve => {
-      frameImg.onload = () => { ctx.drawImage(frameImg, 0, 0, STRIP_WIDTH, STRIP_HEIGHT); resolve(); };
+      frameImg.onload = () => { 
+        ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight); 
+        resolve(); 
+      };
       frameImg.onerror = resolve;
       frameImg.src = framePath;
     });
-
-    // 4. Вставляем 4 фотографии
-    for (let i = 0; i < 4; i++) {
-      const img = new Image();
-      img.src = capturedPhotos[i];
-      await new Promise(res => { img.onload = res; });
-      
-      const yPos = MARGIN_TOP + i * (PHOTO_H + GAP);
-      ctx.drawImage(img, MARGIN_SIDE, yPos, PHOTO_W, PHOTO_H);
-    }
 
     return canvas.toDataURL('image/png');
   }
@@ -242,11 +316,20 @@ document.addEventListener('DOMContentLoaded', () => {
       finalStripDataUrl = await createStrip();
       resultImage.src = finalStripDataUrl;
       
+      // Сбрасываем классы
+      photoWrapper.classList.remove('animate', 'quadrate');
+      
+      // Добавляем класс quadrate если выбран квадрат
+      if (currentFrameType === 'quadrate') {
+        photoWrapper.classList.add('quadrate');
+      }
+      
       showScreen('result');
-      // Запуск анимации печати
+      
+      // Запуск простой анимации: фото выезжает сверху
       setTimeout(() => {
-        photoStripWrapper.classList.add('animate');
-      }, 150);
+        photoWrapper.classList.add('animate');
+      }, 200);
 
       btnCapture.disabled = false;
     });
@@ -272,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnNew.addEventListener('click', () => {
       capturedPhotos = [];
       finalStripDataUrl = '';
-      photoStripWrapper.classList.remove('animate');
+      photoWrapper.classList.remove('animate', 'quadrate');
       showScreen('settings');
     });
   }
