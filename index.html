@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>April Photobooth</title>
+  <title>April Studio</title>
   <link rel="icon" href="img/icon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
     <section id="screen-start" class="screen active">
       <div class="start-content">
         <img src="img/PHOTOBOOTH.png" alt="Фотобудка" class="start-image">
-        <button id="btn-start" class="btn-outline">Зайти</button>
+        <button id="btn-start" class="btn-outline">Начать</button>
       </div>
     </section>
 
@@ -40,8 +40,11 @@
             <button class="color-opt active" data-color="White"><img src="Variants/White.png" alt="Белый"></button>
             <button class="color-opt" data-color="Black"><img src="Variants/Black.png" alt="Чёрный"></button>
             <button class="color-opt" data-color="Red"><img src="Variants/Red.png" alt="Красный"></button>
-            <button class="color-opt" data-color="Cell"><img src="Variants/Cell.png" alt="Клетка"></button>
+            <button class="color-opt" data-color="Cell_Red"><img src="Variants/Cell_Red.png" alt="Клетка Красная"></button>
+            <button class="color-opt" data-color="Cell_Black"><img src="Variants/Cell_Black.png" alt="Клетка Чёрная"></button>
             <button class="color-opt" data-color="Point"><img src="Variants/Point.png" alt="Горошек"></button>
+            <button class="color-opt" data-color="Logo"><img src="Variants/Logo.png" alt="Логотип"></button>
+            <button class="color-opt" data-color="Date"><img src="Variants/Date.png" alt="Дата"></button>
           </div>
         </div>
         <button id="btn-next" class="btn-primary-black">Дальше</button>
@@ -65,15 +68,26 @@
         </div>
       </div>
 
+      <!-- Ползунки настроек (Шум убран) -->
+      <div class="camera-controls">
+        <div class="control-item">
+          <span class="control-label">Яркость</span>
+          <input type="range" id="brightness-slider" min="0" max="100" value="0">
+        </div>
+        <div class="control-item">
+          <span class="control-label">Контраст</span>
+          <input type="range" id="contrast-slider" min="0" max="100" value="0">
+        </div>
+      </div>
+
       <div class="camera-bottom-section">
         <button id="btn-capture" class="btn-capture-circle"></button>
       </div>
     </section>
 
-        <!-- ЭКРАН 4: Результат -->
+    <!-- ЭКРАН 4: Результат -->
     <section id="screen-result" class="screen bg-white">
       <div class="result-area">
-        <!-- Фотополоска (анимируется сверху вниз) -->
         <div class="photo-wrapper" id="photo-wrapper">
           <img id="result-image" src="" alt="Готовое фото">
         </div>
