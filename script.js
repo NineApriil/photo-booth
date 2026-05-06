@@ -398,29 +398,38 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 4. Наложение рамки
-    let framePath;
-    if (currentColor === 'Logo') {
-      framePath = `frames/Frame_${currentFrameType}_Logo.png`;
-    } else if (currentColor === 'Date') {
-      framePath = `frames/Frame_${currentFrameType}_White.png`;
-    } else if (currentColor === 'White') {
-      framePath = `Sample/Frame_${currentFrameType}.png`;
-    } else if (currentColor === 'Point') {
-      framePath = `frames/Frame_${currentFrameType}_point.png`;
+  // 4. Наложение рамки
+let framePath;
+if (currentColor === 'Logo') {
+  framePath = `frames/Frame_${currentFrameType}_Logo.png`;
+} else if (currentColor === 'Date') {
+  framePath = `frames/Frame_${currentFrameType}_White.png`;
+} else if (currentColor === 'Point') {
+  if (currentFrameType === 'quadrate') {
+    framePath = `frames/Frame_quadrate_Point.png`;
+  } else {
+    framePath = `frames/Frame_strip_point.png`;
+  }
+} else if (currentColor === 'White') {
+  framePath = `frames/Frame_${currentFrameType}_White.png`;
+} else {
+  framePath = `frames/Frame_${currentFrameType}_${currentColor}.png`;
+}
+
+const frameImg = new Image();
+await new Promise(resolve => {
+  frameImg.onload = () => {
+    // Для белой рамки обрезаем 2px по краям, чтобы убрать обводку
+    if (currentColor === 'White') {
+      ctx.drawImage(frameImg, 2, 2, stripWidth - 4, stripHeight - 4);
     } else {
-      framePath = `frames/Frame_${currentFrameType}_${currentColor}.png`;
+      ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight);
     }
-    
-    const frameImg = new Image();
-    await new Promise(resolve => {
-      frameImg.onload = () => {
-        ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight);
-        resolve();
-      };
-      frameImg.onerror = resolve;
-      frameImg.src = framePath;
-    });
+    resolve();
+  };
+  frameImg.onerror = resolve;
+  frameImg.src = framePath;
+});
 
     // 5. Дата (в самом конце, поверх рамки)
     if (currentColor === 'Date') {

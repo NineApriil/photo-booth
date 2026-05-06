@@ -216,6 +216,7 @@ body {
   height: auto;
   object-fit: contain;
   transition: opacity 0.3s ease;
+  border: none;
 }
 
 /* КНОПКА И ВАРИАНТЫ ПРИЖАТЫ К НИЗУ */
@@ -274,20 +275,40 @@ body {
   border-color: #BABBBC; 
   border-radius: 22px;
 }
+
+/* ============================================
+   ОБНОВЛЁННЫЙ СТИЛЬ КНОПОК (КАК "НАЧАТЬ")
+   ============================================ */
 .btn-primary-black {
   width: 100%;
   max-width: 420px;
   height: 52px;
-  background: #111010;
-  color: #FFFFFF;
-  border: none;
+  background: linear-gradient(180deg, #F4F4F4 0%, #FFFFFF 100%);
+  color: #393939;
+  border: 2px solid #FFFFFF;
   border-radius: 50px;
   font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
   align-self: center;
   margin: 0;
   flex-shrink: 0;
+  box-shadow: 
+    0 7px 8px rgba(31, 31, 31, 0.046),
+    0 0 2px rgba(231, 231, 231, 0.57);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary-black:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 6px rgba(0, 0, 0, 0.15),
+    0 0 2px rgba(231, 231, 231, 1);
+}
+
+.btn-primary-black:active {
+  transform: translateY(0);
 }
 
 /* ============================================
