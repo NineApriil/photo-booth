@@ -3,7 +3,7 @@
    ============================================ */
 @font-face {
   font-family: 'LiuJianMaoCao';
-  src: url('Fonts/LiuJianMaoCao-Regular.ttf') format('truetype');
+  src: url('Fonts/LiuJianMaoCao-Regular.ttf') format('truetype'); 
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -53,8 +53,7 @@ body {
   .btn-outline { width: 240px; height: 44px; font-size: 15px; }
   
   #screen-settings { 
-    padding: 24px 16px 20px; 
-    gap: 30px;
+    padding: 20px 16px; 
   }
   .frame-container { height: 280px; min-height: 240px; }
   .frame-image { max-height: 270px; }
@@ -64,13 +63,13 @@ body {
   .color-opt { width: 64px; height: 64px; }
   .color-opt.active { transform: scale(1.08); }
   
-  .btn-primary-black { height: 48px; font-size: 15px; margin: 0; }
+  .btn-primary-black { height: 48px; font-size: 15px; }
   
-  #screen-camera { padding: 20px 16px 24px; }
-  .camera-container { max-height: 45vh; margin-bottom: 10px; }
+  #screen-camera { padding: 12px 16px 16px; }
+  .camera-container { margin-bottom: 10px; }
   .toggle-track { width: 250px; height: 38px; }
   .toggle-btn { height: 30px; font-size: 14px; }
-  .btn-capture-circle { width: 110px; height: 110px; border-width: 5px; }
+  .btn-capture-circle { width: 90px; height: 90px; border-width: 8px; }
   #screen-result { padding: 20px 16px 20px; }
   .result-area { height: 38vh; margin-bottom: 160px; }
   .photo-wrapper { width: 90px; }
@@ -82,14 +81,14 @@ body {
   .app-container { max-height: 100dvh; }
   .start-image { width: 260px; }
   .btn-outline { width: 250px; height: 46px; }
-  #screen-settings { padding: 28px 18px 20px; gap: 35px; }
+  #screen-settings { padding: 24px 18px; }
   .frame-container { height: 300px; min-height: 260px; }
   .frame-image { max-height: 290px; }
   .color-opt { width: 76px; height: 76px; }
-  .btn-primary-black { height: 50px; margin: 0; }
-  #screen-camera { padding: 22px 18px 28px; }
-  .camera-container { max-height: 48vh; }
-  .btn-capture-circle { width: 120px; height: 120px; }
+  .btn-primary-black { height: 50px; }
+  #screen-camera { padding: 16px 18px 24px; }
+  .camera-container { }
+  .btn-capture-circle { width: 100px; height: 100px; border-width: 8px; }
   #screen-result { padding: 28px 18px 24px; }
   .result-area { height: 40vh; margin-bottom: 180px; }
   .photo-wrapper { width: 100px; }
@@ -181,8 +180,7 @@ body {
 #screen-settings {
   background: #FFFFFF;
   justify-content: flex-start;
-  gap: 40px;
-  padding: 32px 20px 24px;
+  padding: 32px 20px 20px;
   z-index: 15;
   overflow: hidden;
 }
@@ -219,19 +217,21 @@ body {
   object-fit: contain;
   transition: opacity 0.3s ease;
 }
+
+/* КНОПКА И ВАРИАНТЫ ПРИЖАТЫ К НИЗУ */
 .bottom-section {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 0;
-  padding-bottom: 16px;
+  margin-top: auto;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
   flex-shrink: 0;
 }
+
 .color-section { width: 100%; padding: 0; }
 .label { 
   display: block; 
-  color: #bebfc1; 
+  color: #818286; 
   font-size: 12px; 
   letter-spacing: 0.5px; 
   margin-bottom: 12px;
@@ -298,21 +298,20 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 36px 32px;
+  padding: 16px 42px 24px;
   gap: 0;
   z-index: 15;
 }
 .camera-container {
   width: 100%;
-  aspect-ratio: 3/4; /* Соотношение сторон 3:4 */
+  aspect-ratio: 3/4;
   background: #EBECED;
   border-radius: 20px;
   overflow: hidden;
   position: relative;
-  margin-bottom: 12px;
+  margin: 0 auto 12px;
   flex-shrink: 0;
-  max-height: 50vh;
-  
+  border: 2px solid #D7DAE1;
 }
 #video {
   width: 100%;
@@ -397,28 +396,26 @@ body {
 .toggle-btn.active { color: #111010; font-weight: 500; }
 .toggle-btn.inactive { color: #71747C; }
 
-/* ============================================
-   ПОЛЗУНКИ КАМЕРЫ (вернул старые стили)
-   ============================================ */
+/* Ползунки */
 .camera-controls {
   width: 100%;
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px 0 8px;
+  gap: 12px;
+  padding: 0 0 12px;
   margin: 0 auto;
 }
 
 .control-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .control-label {
   font-size: 12px;
-  color: #bebfc1;
+  color: #818286;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: left;
@@ -427,23 +424,24 @@ body {
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: #EBECED;
-  border-radius: 3px;
+  border-radius: 4px;
   outline: none;
   cursor: pointer;
-  border: 1px solid #D7DAE1; /* Рамка как раньше */
+  border: 1px solid #D7DAE1;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #111010; /* Голубой цвет как раньше */
+  width: 24px;
+  height: 24px;
+  background: #111010;
   border-radius: 50%;
   border: 3px solid #FFFFFF;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: transform 0.2s ease;
+  margin-top: -1px;
 }
 
 input[type="range"]::-webkit-slider-thumb:active {
@@ -454,16 +452,16 @@ input[type="range"]::-webkit-slider-thumb:active {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  padding-top: 16px;
   padding-bottom: 12px;
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 .btn-capture-circle {
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: #111010;
-  border: 10px solid #EAEAED;
+  border: 8px solid #EAEAED;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
@@ -492,18 +490,18 @@ input[type="range"]::-webkit-slider-thumb:active {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin-bottom: 240px; /* Увеличил с 200px чтобы фото не заплывало */
+  margin-bottom: 240px;
 }
 .photo-wrapper {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%) translateY(-100%);
-  width: 110px; /* Уменьшил с 135px */
+  width: 110px;
   z-index: 2;
   opacity: 0;
 }
-.photo-wrapper.quadrate { width: 240px; /* Уменьшил с 286px */ }
+.photo-wrapper.quadrate { width: 240px; }
 .photo-wrapper.animate {
   opacity: 1;
   animation: slideDown 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;

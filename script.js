@@ -45,6 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const brightnessSlider = document.getElementById('brightness-slider');
   const contrastSlider = document.getElementById('contrast-slider');
 
+  // Функция для заполнения ползунка цветом
+  function updateSliderFill(slider, color) {
+    if (!slider) return;
+    const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.background = `linear-gradient(to right, ${color} ${value}%, #EBECED ${value}%)`;
+  }
+
+  // Инициализация цветов ползунков
+  const sliderColor = '#111010';
+  updateSliderFill(brightnessSlider, sliderColor);
+  updateSliderFill(contrastSlider, sliderColor);
+
   // 3. НАВИГАЦИЯ
   function showScreen(name) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
@@ -141,23 +153,30 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let filters = `brightness(${brightnessVal}) contrast(${contrastVal})`;
     
-    // Если выбрано Ч/Б, добавляем grayscale
     if (btnBw.classList.contains('active')) {
       filters += ' grayscale(100%)';
     }
     
-    // Применяем фильтры с префиксом для Safari
     video.style.filter = filters;
-    video.style.webkitFilter = filters; // Для Safari и старых браузеров
+    video.style.webkitFilter = filters;
   }
 
-  // Слушатели событий для ползунков
-  if (brightnessSlider) brightnessSlider.addEventListener('input', updateCameraFilters);
-  if (contrastSlider) contrastSlider.addEventListener('input', updateCameraFilters);
+  // Слушатели
+  if (brightnessSlider) {
+    brightnessSlider.addEventListener('input', () => {
+      updateSliderFill(brightnessSlider, sliderColor);
+      updateCameraFilters();
+    });
+  }
+  if (contrastSlider) {
+    contrastSlider.addEventListener('input', () => {
+      updateSliderFill(contrastSlider, sliderColor);
+      updateCameraFilters();
+    });
+  }
 
   // 7. ФИЛЬТРЫ (Ч/Б)
   function applyFilter(type) {
-    // Сначала обновляем классы кнопок
     if (type === 'bw') {
       btnBw.classList.add('active'); btnBw.classList.remove('inactive');
       btnColor.classList.remove('active'); btnColor.classList.add('inactive');
@@ -167,8 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnBw.classList.remove('active'); btnBw.classList.add('inactive');
       toggleTrack.classList.remove('bw-active');
     }
-    
-    // Сразу обновляем фильтр с учетом новых классов
     updateCameraFilters();
   }
 
@@ -263,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = stripWidth;
     canvas.height = stripHeight;
 
-    // Фон
+    // 1. Фон
     if (currentColor === 'Logo' || currentColor === 'Date' || currentColor === 'White') {
       ctx.fillStyle = '#FFFFFF';
     } else if (currentColor === 'Black') {
@@ -279,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     ctx.fillRect(0, 0, stripWidth, stripHeight);
 
-    // Паттерны
+    // 2. Паттерны
     if (currentColor === 'Cell_Red') {
       const sz = 12;
       for (let x = 0; x < stripWidth; x += sz) {
@@ -302,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Фотографии
+    // 3. Фотографии
     if (currentFrameType === 'quadrate') {
       for (let i = 0; i < 4; i++) {
         const img = new Image();
@@ -327,31 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Дата
-    if (currentColor === 'Date') {
-      const fontSize = currentFrameType === 'quadrate' ? '64px' : '48px';
-      const fontFamily = '"LiuJianMaoCao", cursive';
-      
-      if (document.fonts) {
-        await document.fonts.load(`${fontSize} ${fontFamily}`);
-      }
-      
-      const now = new Date();
-      const dateStr = `${now.getDate()}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
-      
-      ctx.fillStyle = '#151516';
-      ctx.font = `${fontSize} ${fontFamily}`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'bottom';
-      
-      if (currentFrameType === 'quadrate') {
-        ctx.fillText(dateStr, 820, stripHeight - 60);
-      } else {
-        ctx.fillText(dateStr, 132, stripHeight - 28);
-      }
-    }
-
-    // Наложение рамки
+    // 4. Наложение рамки (ПЕРЕНЕСЕНО НАВЕРХ)
     let framePath;
     if (currentColor === 'Logo') {
       framePath = `frames/Frame_${currentFrameType}_Logo.png`;
@@ -374,6 +367,35 @@ document.addEventListener('DOMContentLoaded', () => {
       frameImg.onerror = resolve;
       frameImg.src = framePath;
     });
+
+    // 5. Дата (ПЕРЕНЕСЕНО В САМЫЙ КОНЕЦ, чтобы быть поверх рамки)
+    if (currentColor === 'Date') {
+      const fontSize = currentFrameType === 'quadrate' ? '64px' : '48px';
+      const fontFamily = '"LiuJianMaoCao", "Comic Sans MS", cursive';
+      
+      // Пытаемся загрузить шрифт, но если папка fonts не найдена — не ломаем код
+      try {
+        if (document.fonts) {
+           await document.fonts.load(`${fontSize} "LiuJianMaoCao"`);
+        }
+      } catch (e) {
+        console.warn('Шрифт не найден, используем fallback');
+      }
+      
+      const now = new Date();
+      const dateStr = `${now.getDate()}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
+      
+      ctx.fillStyle = '#151516';
+      ctx.font = `${fontSize} ${fontFamily}`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      
+      if (currentFrameType === 'quadrate') {
+        ctx.fillText(dateStr, 820, stripHeight - 60);
+      } else {
+        ctx.fillText(dateStr, 132, stripHeight - 28);
+      }
+    }
 
     return canvas.toDataURL('image/png');
   }
