@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnDownload = document.getElementById('btn-download');
   const btnNew = document.getElementById('btn-new');
 
-  // Ползунки камеры (Шум убран)
+  // Ползунки камеры
   const brightnessSlider = document.getElementById('brightness-slider');
   const contrastSlider = document.getElementById('contrast-slider');
 
@@ -146,14 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
       filters += ' grayscale(100%)';
     }
     
+    // Применяем фильтры с префиксом для Safari
     video.style.filter = filters;
+    video.style.webkitFilter = filters; // Для Safari и старых браузеров
   }
 
   // Слушатели событий для ползунков
   if (brightnessSlider) brightnessSlider.addEventListener('input', updateCameraFilters);
   if (contrastSlider) contrastSlider.addEventListener('input', updateCameraFilters);
 
-  // 7. ФИЛЬТРЫ (Ч/Б) - ИСПРАВЛЕНО
+  // 7. ФИЛЬТРЫ (Ч/Б)
   function applyFilter(type) {
     // Сначала обновляем классы кнопок
     if (type === 'bw') {
