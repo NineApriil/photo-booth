@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🟢 Приложение инициализировано');
+  
+  // Проверка поддержки фильтров канваса
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const supportsCanvasFilter = 'filter' in ctx;
+  console.log('Canvas filter support:', supportsCanvasFilter);
 
   // Предзагрузка шрифта для даты
   if (document.fonts) {
@@ -215,6 +221,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const QUAD_WIDTH = (QUAD_PHOTO_W * 2) + QUAD_GAP + (QUAD_MARGIN_SIDE * 2);
   const QUAD_HEIGHT = (QUAD_PHOTO_H * 2) + QUAD_GAP + QUAD_MARGIN_TOP + QUAD_MARGIN_BOTTOM;
 
+  // === ФУНКЦИЯ ДЛЯ РУЧНОЙ ОБРАБОТКИ ФИЛЬТРОВ (фоллбэк) ===
+  function applyManualFilters(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    const brightnessVal = 1 + (brightnessSlider.value / 100);
+    const contrastVal = 1 + (contrastSlider.value / 100);
+    const isBW = btnBw.classList.contains('active');
+    
+    for (let i = 0; i < data.length; i += 4) {
+      let r = data[i];
+      let g = data[i+1];
+      let b = data[i+2];
+      
+      // Применяем яркость
+      r *= brightnessVal;
+      g *= brightnessVal;
+      b *= brightnessVal;
+      
+      // Применяем контраст
+      r = ((r - 128) * contrastVal) + 128;
+      g = ((g - 128) * contrastVal) + 128;
+      b = ((b - 128) * contrastVal) + 128;
+      
+      // Применяем Ч/Б если нужно
+      if (isBW) {
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        r = g = b = gray;
+      }
+      
+      // Ограничиваем значения 0-255
+      data[i] = Math.min(255, Math.max(0, r));
+      data[i+1] = Math.min(255, Math.max(0, g));
+      data[i+2] = Math.min(255, Math.max(0, b));
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+  }
+
   function captureFrame() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -237,15 +282,24 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.translate(QUAD_PHOTO_W, 0); 
     ctx.scale(-1, 1);
     
-    const brightnessVal = 1 + (brightnessSlider.value / 100);
-    const contrastVal = 1 + (contrastSlider.value / 100);
-    ctx.filter = `brightness(${brightnessVal}) contrast(${contrastVal})`;
-    
-    if (btnBw.classList.contains('active')) {
-      ctx.filter += ' grayscale(100%)';
+    // Применяем фильтры через ctx.filter если поддерживается
+    if (supportsCanvasFilter) {
+      const brightnessVal = 1 + (brightnessSlider.value / 100);
+      const contrastVal = 1 + (contrastSlider.value / 100);
+      ctx.filter = `brightness(${brightnessVal}) contrast(${contrastVal})`;
+      
+      if (btnBw.classList.contains('active')) {
+        ctx.filter += ' grayscale(100%)';
+      }
     }
     
     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, QUAD_PHOTO_W, QUAD_PHOTO_H);
+    
+    // Если filter не поддерживается, применяем вручную
+    if (!supportsCanvasFilter) {
+      applyManualFilters(ctx, QUAD_PHOTO_W, QUAD_PHOTO_H);
+    }
+    
     ctx.restore();
     
     return canvas.toDataURL('image/png');
@@ -344,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 4. Наложение рамки (ПЕРЕНЕСЕНО НАВЕРХ)
+    // 4. Наложение рамки
     let framePath;
     if (currentColor === 'Logo') {
       framePath = `frames/Frame_${currentFrameType}_Logo.png`;
@@ -368,18 +422,17 @@ document.addEventListener('DOMContentLoaded', () => {
       frameImg.src = framePath;
     });
 
-    // 5. Дата (ПЕРЕНЕСЕНО В САМЫЙ КОНЕЦ, чтобы быть поверх рамки)
+    // 5. Дата (в самом конце, поверх рамки)
     if (currentColor === 'Date') {
       const fontSize = currentFrameType === 'quadrate' ? '64px' : '48px';
       const fontFamily = '"LiuJianMaoCao", "Comic Sans MS", cursive';
       
-      // Пытаемся загрузить шрифт, но если папка fonts не найдена — не ломаем код
       try {
         if (document.fonts) {
            await document.fonts.load(`${fontSize} "LiuJianMaoCao"`);
         }
       } catch (e) {
-        console.warn('Шрифт не найден, используем fallback');
+        console.warn('Шрифт не найден');
       }
       
       const now = new Date();
