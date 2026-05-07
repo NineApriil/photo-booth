@@ -406,7 +406,7 @@ if (currentColor === 'Logo') {
   framePath = `frames/Frame_${currentFrameType}_White.png`;
 } else if (currentColor === 'Point') {
   if (currentFrameType === 'quadrate') {
-    framePath = `frames/Frame_quadrate_Point.png`;
+    framePath = `frames/Frame_quadrate_point.png`;
   } else {
     framePath = `frames/Frame_strip_point.png`;
   }
