@@ -34,17 +34,153 @@ body {
   overflow: hidden;
 }
 
-/* Десктоп */
+/* ============================================
+   🖥️ АДАПТИВНАЯ ВЕРСИЯ ДЛЯ ДЕСКТОПА
+   ============================================ */
 @media (min-width: 768px) {
-  body { background: #FFFFFF; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  body {
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
   .app-container {
     height: 90vh;
-    max-height: 850px;
-    border-radius: 30px;
+    max-height: 880px;
+    max-width: 520px;
+    width: 100%;
     background: #FFFFFF;
-    box-shadow: none;
+    overflow: hidden;
+  }
+
+  /* По умолчанию центрируем содержимое экранов по вертикали */
+  .screen {
+    justify-content: center !important;
+    padding: 32px !important;
+  }
+
+  /* Сбрасываем мобильные "прижатия" к низу, чтобы на десктопе работало центрирование */
+  .bottom-section, .toggle-wrapper, .camera-controls {
+    margin-top: 0 !important;
+  }
+
+  /* =========================================
+     🎯 ЭКРАН 2: ТОЧНАЯ НАСТРОЙКА РАСПОЛОЖЕНИЯ
+     ========================================= */
+  #screen-settings {
+    /* 1. ОТМЕНЯЕМ центрирование, чтобы управлять позицией рамки вручную */
+    justify-content: flex-start !important;
+    /* 2. ЗАДАЕМ отступ сверху → рамка поднимается выше */
+    padding-top: 48px !important;
+    /* 3. УМЕНЬШАЕМ расстояние между рамкой и вариантами */
+    gap: 16px !important;
+  }
+
+  .frame-container {
+    height: 380px !important;
+    min-height: 440px !important;
+  }
+  .color-scroll {
+    gap: 2px !important; /* Было 8px, стало 6px (можно поставить 4px, если нужно еще ближе) */
+  }
+  
+  .frame-image {
+    max-width: 100%;
+    max-height: 100%;
+    /* Убрал transform: scale, чтобы рамка гарантированно НЕ ОБРЕЗАЛАСЬ */
+  }
+
+  .bottom-section {
+    /* 4. ОСТАВЛЯЕМ варианты на месте (прижаты к низу контейнера) */
+    margin-top: auto !important;
+    /* 5. ПОДНИМАЕМ кнопку ближе к вариантам (уменьшили отступ) */
+    gap: 4px !important;
+    padding-bottom: 32px !important; /* Фиксируем безопасный отступ от нижнего края */
+  }
+ 
+
+  .color-opt {
+    width: 96px !important;
+    height: 96px !important;
+    border: 5px solid transparent !important; /* Увеличили обводку с 3px до 5px */
+    border-radius: 22px !important; /* Скругление кнопок */
+  }
+    .color-opt.active {
+    transform: scale(1.22) !important; /* Увеличили масштаб (было 1.08) */
+   
+  }
+
+  .btn-primary-black {
+    height: 56px !important;
+    font-size: 17px !important;
+  }
+
+  /* =========================================
+     📸 ЭКРАН 1: УВЕЛИЧЕНИЕ ФОТО И КНОПКИ
+     ========================================= */
+  .start-image {
+    width: 380px !important;
+    height: auto !important;
+  }
+  #screen-start {
+  justify-content: flex-start !important; /* Отменяет центрирование по вертикали */
+  padding-top: 100px !important; /* Поднимает контент выше. Уменьшай/увеличивай число по вкусу */
+}
+  .btn-outline {
+    width: 320px !important;
+    height: 56px !important;
+    font-size: 18px !important;
+  }
+  #screen-start .btn-outline {
+    margin-top: 64px !important; /* Добавляет отступ сверху только у кнопки */
+  }
+
+  /* =========================================
+     📷 ЭКРАН 3: УМЕНЬШЕНИЕ РАМКИ КАМЕРЫ
+     ========================================= */
+  #screen-camera {
+    padding: 24px 32px !important;
+  }
+  .camera-container {
+    width: 85% !important;
+    max-width: 340px !important;
+    margin-bottom: 20px !important;
+  }
+  .toggle-track {
+    width: 260px !important;
+  }
+  .camera-controls {
+    max-width: 340px !important;
+    gap: 16px !important;
+  }
+  .btn-capture-circle {
+    width: 90px !important;
+    height: 90px !important;
+  }
+
+  /* =========================================
+     🖼️ ЭКРАН 4: ИТОГОВОЕ ФОТО
+     ========================================= */
+  #screen-result {
+    padding: 32px !important;
+  }
+  .result-area {
+    max-width: 400px !important;
+    height: 48vh !important;
+    margin-bottom: 200px !important;
+  }
+  .photo-wrapper {
+    width: 150px !important;
+  }
+  .photo-wrapper.quadrate {
+    width: 320px !important;
   }
 }
+
+  /* ========================== */
 
 /* Адаптив для маленьких экранов */
 @media (max-height: 700px) {
@@ -241,7 +377,7 @@ body {
 
 .color-scroll { 
   display: flex; 
-  gap: 8px; 
+  gap: 4px; 
   overflow-x: auto; 
   padding: 8px 16px 8px 12px; 
   margin: 0 -4px; 
@@ -271,9 +407,8 @@ body {
   border-radius: 15px; 
 }
 .color-opt.active { 
-  transform: scale(1.12);
-  border-color: #BABBBC; 
-  border-radius: 22px;
+  transform: scale(1.14);
+
 }
 
 /* ============================================
